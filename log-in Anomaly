@@ -1,1 +1,11 @@
+# Summary
+This I have done in the month of May 2026, it's a simple logic to ditect if more than 5 failiurs happens for any number of users , this will give the user names and counts of it respectively. Just to give it a thought as an attacher
+when he tries for more and more failed attempt for a signle or multiple account simultainiously or one by one , this rule help us to detect that anol=maly behaviour.
 
+# Alert logic for Azure Sentinel
+let FailedThreshold =5;
+IdentityLogonEvents
+| where ActionType == "LogonFailed" and (FailureReason contains "incorrect" or FailureReason contains "invalid" or FailureReason contains "no such" or FailureReason contains "is locked")
+| summarize UserCount=dcount(AccountName), Appliction=make_set(Application) ,Users = make_set(AccountName,100) by IPAddress, Location, bin(Timestamp, 5m) | where UserCount >= FailedThreshold
+
+## Note: This is the only code part of it, rest is different conditions which we need to select to configure the alert in the Microsoft Azure Sentinel.
