@@ -1,0 +1,15 @@
+# Summary
+This I have done in the month of Sep 2026, when we got a requirement like when we saw an alert where an external user was trying to access some of the confidential files in the Entra ID sharepoint and from Teams groups.
+Later when we investigated thoroughly we were able to get that one of our VIP user when he was getting offboarded he cleverly added/invited his personal gmail account as a guest user to our environment and added that 
+account in all the priority guest user accounts, so this activity did not cover under any detections. So when we got an incident for an guest account accessing some sensitive document we investigated back and thought to 
+create multiple detection techniques. In that one of which I was part of this where I went from stracth to fine tuning for custom domains. Here I am giving a quick alert logic idea to build the initial logic to build the
+one that fits for your organization.
+
+# Alert logic for Azure Sentinel
+AuditLogs
+| where TimeGenerated > ago(24h)
+| where OperationName =~ "Invite external user"
+| project TimeGenerated, InitiatedBy, IPAddress,  Location, ResultType, TargetResources
+| order by TimeGenerated desc
+
+## Note: This is the only code part of it, rest is different conditions which we need to select to configure the alert in the Microsoft Azure Sentinel.
